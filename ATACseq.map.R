@@ -140,11 +140,11 @@ for (i in 1:nrow(files)) {
   # Run this before pylapels
   # It will change \tnM: to \tNM:
   files$bamSpretNMFile[i] = gsub(".out.bam",".NM.out.bam",files$bamSpretFile[i])
-  SpretCmd = paste("samtools view -h", paste0(files$dir[i],files$bamSpretFile[i]), "| sed 's/\tnM:/\tNM:/' | samtools view -bS - >", files$bamSpretNMFile[i])
+  SpretCmd = paste("samtools view -h", paste0(files$dir[i],files$bamSpretFile[i]), "| sed 's/\tnM:/\tNM:/' | samtools view -bS - >", paste0(files$dir[i],files$bamSpretNMFile[i]))
   system(SpretCmd)
   
   files$bamB6NMFile[i] = gsub(".out.bam",".NM.out.bam",files$bamB6File[i])
-  B6Cmd = paste("samtools view -h", paste0(files$dir[i],files$bamB6File[i]), "| sed 's/\tnM:/\tNM:/' | samtools view -bS - >", files$bamB6NMFile[i])
+  B6Cmd = paste("samtools view -h", paste0(files$dir[i],files$bamB6File[i]), "| sed 's/\tnM:/\tNM:/' | samtools view -bS - >", paste0(files$dir[i],files$bamB6NMFile[i]))
   system(B6Cmd)
   
   # Running pylaplels on Spret aligned bams
@@ -154,7 +154,7 @@ for (i in 1:nrow(files)) {
   
   # Need to sort spret bam files by co-ordinates again to mark duplicates
   files$lapelsAlignedCoordSortedBam[i] = gsub(".lapels.sortedByName.bam",".lapels.sortedByCoord.bam",files$lapelsAlignedBam[i])
-  sortCmd = paste("samtools sort", files$lapelsAlignedBam[i], "-o", files$lapelsAlignedCoordSortedBam[i])
+  sortCmd = paste("samtools sort", paste0(files$dir[i],files$lapelsAlignedBam[i]), "-o", paste0(files$dir[i],files$lapelsAlignedCoordSortedBam[i]))
   system(sortCmd)
   
   print("Step 8")
