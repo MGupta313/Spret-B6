@@ -120,6 +120,7 @@ for (i in 1:nrow(files)) {
   
   ##############################
   # Map to Spret genome
+  print("Step 6")
   print("Paternal Spret STAR mapping")
   
   # #paired-end STAR alignment based on manifest columns
@@ -133,6 +134,7 @@ for (i in 1:nrow(files)) {
   # system(starSpretCmd)
   # files$bamSpretFile[i] = paste0(Spretsample, ".bam")
   
+  print("Step 7")
   print("Running lapels")
   
   # Run this before pylapels
@@ -148,16 +150,18 @@ for (i in 1:nrow(files)) {
   # Running pylaplels on Spret aligned bams
   files$lapelsAlignedBam[i] = gsub(".out.bam",".lapels.sortedByName.bam",files$bamSpretFile[i])
   pylapelsCmd = paste("pylapels -n -o", paste0(files$dir[i],files$lapelsAlignedBam[i]), "/home/boss_lab/Apps/genomes/species/spret-b6/SPRET_EiJ.genome/SPRETmm10.mod", paste0(files$dir[i],files$bamSpretNMFile[i]))
+  system(pylapelsCmd)
   
   # Need to sort spret bam files by co-ordinates again to mark duplicates
   files$lapelsAlignedCoordSortedBam[i] = gsub(".lapels.sortedByName.bam",".lapels.sortedByCoord.bam",files$lapelsAlignedBam[i])
   sortCmd = paste("samtools sort", files$lapelsAlignedBam[i], "-o", files$lapelsAlignedCoordSortedBam[i])
   system(sortCmd)
   
+  print("Step 8")
   print("Mark duplicates")
   
   #### For B6 ####
-  files$markDupsB6Bam[i] = markDups(paste0(files$dir[i], files$bamB6NMFile[i]), picardCmd, delBam = T)
+  files$markDupsB6Bam[i] = markDups(paste0(files$dir[i], files$bamB6NMFile[i]), picardCmd, delBam = F)
   bamFile = paste0(files$dir[i], files$markDupsB6Bam[i])
   
   print("Get mapping stats")
@@ -169,7 +173,7 @@ for (i in 1:nrow(files)) {
   files$B6.paired.reads[i] = cts[4]
   
   #### For Spret ####
-  files$markDupsSpretBam[i] = markDups(paste0(files$dir[i], files$lapelsAlignedCoordSortedBam[i]), picardCmd, delBam = T)
+  files$markDupsSpretBam[i] = markDups(paste0(files$dir[i], files$lapelsAlignedCoordSortedBam[i]), picardCmd, delBam = F)
   bamFile = paste0(files$dir[i], files$markDupsSpretBam[i])
   
   print("Get mapping stats")
@@ -180,23 +184,13 @@ for (i in 1:nrow(files)) {
   files$Spret.unique.reads[i] = cts[3]
   files$Spret.paired.reads[i] = cts[4]
   
-  # print("Sort bam")
-  # bamSortFile = sortBam(bamFile,
-  #                       bamSortFile = paste0(files$dir[i], files$sample[i], bamSortExt),
-  #                       delBam = T, threads = threads, mem = sortMem)
+  # print("Step 9")
+  # print("Running suspenders")
   # 
-  # print("Mark duplicates")
-  # files$bamFile[i] = markDups(paste0(files$dir[i], bamSortFile), picardCmd, delBam = T)
-  # bamFile = paste0(files$dir[i], files$bamFile[i])
-  # 
-  # print("Get mapping stats")
-  # cts = getBamCts(bamFile)
-  # 
-  # files$unmapped.reads[i] = cts[1]
-  # files$mapped.reads[i] = cts[2]
-  # files$unique.reads[i] = cts[3]
-  # files$paired.reads[i] = cts[4]
-  # 
+  # # sort both spret and b6 dupMarked bams by query name before suspenders
+  # files$markDupsB6SortedByNameBam[i] = gsub()
+  # sortB6cmd = paste("samtools sort -n", files$markDupsB6Bam[i], "-o", files$markDupsB6SortedByNameBam[i])
+  
   # print("Make BigWig")
   # files$bwFile[i] = paste0(files$dir[i], files$sample[i], ".rpm.bw")
   # bamToBigWig(bamFile, bwFile = files$bwFile[i], flag = scanBamFlag(isDuplicate = F), removeChrs = exChr, sigDigits = 2)
