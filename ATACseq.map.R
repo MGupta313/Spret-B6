@@ -91,52 +91,52 @@ for (i in 1:nrow(files)) {
   print("Step 5")
   print("Starting mapping")
   
-  # Set genomes for mapping
-  genomeStr = "mm10" # Replace
-  B6Genome = "/home/boss_lab/Apps/genomes/STAR/mm10.ERCC"
-  SpretGenome = "/home/boss_lab/Apps/genomes/species/spret-b6/SPRET_EiJ.STAR.genome"
-  
-  # Map to B6 genome
-  print("Maternal B6 STAR mapping")
-  
-  #paired-end STAR alignment based on manifest columns
-  B6sample = paste0(files$dir[i], files$sample[i], ".B6")
-  genome = B6Genome
-  
-  if (!file.exists(paste0(files$dir[i], files$fqMate1[i], ".gz"))) {
-    cmd1 = paste("gzip -k", paste0(files$dir[i], files$fqMate1[i]))
-    cmd2 = paste("gzip -k", paste0(files$dir[i], files$fqMate2[i]))
-    system(cmd1)
-    system(cmd2)
-  }
-  
-  fq1 = paste0(files$dir[i], files$fqMate1[i], ".gz")
-  fq2 = paste0(files$dir[i], files$fqMate2[i], ".gz")
-  
-  starB6Cmd = paste("STAR --runMode alignReads --runThreadN 1 --genomeDir", genome, "--genomeLoad NoSharedMemory --readFilesIn", fq1, fq2, "--readFilesCommand zcat --outFileNamePrefix", B6sample, "--outSAMtype BAM SortedByCoordinate --outBAMcompression 6 --outFilterMultimapNmax 1 --outFilterMismatchNoverLmax 0.06 --outFilterMatchNmin 22 --outFilterMatchNminOverLread 0.55 --outFilterScoreMinOverLread 0.55 --seedSearchStartLmax 30 --alignIntronMax 1 --alignEndsType Local")
-  
-  system(starB6Cmd)
-  files$bamB6File[i] = paste0(B6sample, ".bam")
+  # # Set genomes for mapping
+  # genomeStr = "mm10" # Replace
+  # B6Genome = "/home/boss_lab/Apps/genomes/STAR/mm10.ERCC"
+  # SpretGenome = "/home/boss_lab/Apps/genomes/species/spret-b6/SPRET_EiJ.STAR.genome"
+  # 
+  # # Map to B6 genome
+  # print("Maternal B6 STAR mapping")
+  # 
+  # #paired-end STAR alignment based on manifest columns
+  # B6sample = paste0(files$dir[i], files$sample[i], ".B6")
+  # genome = B6Genome
+  # 
+  # if (!file.exists(paste0(files$dir[i], files$fqMate1[i], ".gz"))) {
+  #   cmd1 = paste("gzip -k", paste0(files$dir[i], files$fqMate1[i]))
+  #   cmd2 = paste("gzip -k", paste0(files$dir[i], files$fqMate2[i]))
+  #   system(cmd1)
+  #   system(cmd2)
+  # }
+  # 
+  # fq1 = paste0(files$dir[i], files$fqMate1[i], ".gz")
+  # fq2 = paste0(files$dir[i], files$fqMate2[i], ".gz")
+  # 
+  # starB6Cmd = paste("STAR --runMode alignReads --runThreadN 1 --genomeDir", genome, "--genomeLoad NoSharedMemory --readFilesIn", fq1, fq2, "--readFilesCommand zcat --outFileNamePrefix", B6sample, "--outSAMtype BAM SortedByCoordinate --outBAMcompression 6 --outFilterMultimapNmax 1 --outFilterMismatchNoverLmax 0.06 --outFilterMatchNmin 22 --outFilterMatchNminOverLread 0.55 --outFilterScoreMinOverLread 0.55 --seedSearchStartLmax 30 --alignIntronMax 1 --alignEndsType Local")
+  # 
+  # system(starB6Cmd)
+  # files$bamB6File[i] = paste0(B6sample, ".bam")
   
   ##############################
   # Map to Spret genome
   print("Paternal Spret STAR mapping")
   
-  #paired-end STAR alignment based on manifest columns
-  Spretsample = paste0(files$dir[i], files$sample[i], ".Spret")
-  genome = SpretGenome
-  fq1 = paste0(files$dir[i], files$fqMate1[i], ".gz")
-  fq2 = paste0(files$dir[i], files$fqMate2[i], ".gz")
-  
-  starSpretCmd = paste("STAR --runMode alignReads --runThreadN 1 --genomeDir", genome, "--genomeLoad NoSharedMemory --readFilesIn", fq1, fq2, "--readFilesCommand zcat --outFileNamePrefix", Spretsample, "--outSAMtype BAM SortedByCoordinate --outBAMcompression 6 --outFilterMultimapNmax 1 --outFilterMismatchNoverLmax 0.06 --outFilterMatchNmin 22 --outFilterMatchNminOverLread 0.55 --outFilterScoreMinOverLread 0.55 --seedSearchStartLmax 30 --alignIntronMax 1 --alignEndsType Local")
-  
-  system(starSpretCmd) 
-  files$bamSpretFile[i] = paste0(Spretsample, ".bam")
+  # #paired-end STAR alignment based on manifest columns
+  # Spretsample = paste0(files$dir[i], files$sample[i], ".Spret")
+  # genome = SpretGenome
+  # fq1 = paste0(files$dir[i], files$fqMate1[i], ".gz")
+  # fq2 = paste0(files$dir[i], files$fqMate2[i], ".gz")
+  # 
+  # starSpretCmd = paste("STAR --runMode alignReads --runThreadN 1 --genomeDir", genome, "--genomeLoad NoSharedMemory --readFilesIn", fq1, fq2, "--readFilesCommand zcat --outFileNamePrefix", Spretsample, "--outSAMtype BAM SortedByCoordinate --outBAMcompression 6 --outFilterMultimapNmax 1 --outFilterMismatchNoverLmax 0.06 --outFilterMatchNmin 22 --outFilterMatchNminOverLread 0.55 --outFilterScoreMinOverLread 0.55 --seedSearchStartLmax 30 --alignIntronMax 1 --alignEndsType Local")
+  # 
+  # system(starSpretCmd)
+  # files$bamSpretFile[i] = paste0(Spretsample, ".bam")
   
   print("Running lapels")
+  
   # Run this before pylapels
   # It will change \tnM: to \tNM:
-  
   files$bamSpretNMFile[i] = gsub(".out.bam",".NM.out.bam",files$bamSpretFile[i])
   SpretCmd = paste("samtools view -h", paste0(files$dir[i],files$bamSpretFile[i]), "| sed 's/\tnM:/\tNM:/' | samtools view -bS - >", files$bamSpretNMFile[i])
   system(SpretCmd)
@@ -149,19 +149,36 @@ for (i in 1:nrow(files)) {
   files$lapelsAlignedBam[i] = gsub(".out.bam",".lapels.sortedByName.bam",files$bamSpretFile[i])
   pylapelsCmd = paste("pylapels -n -o", paste0(files$dir[i],files$lapelsAlignedBam[i]), "/home/boss_lab/Apps/genomes/species/spret-b6/SPRET_EiJ.genome/SPRETmm10.mod", paste0(files$dir[i],files$bamSpretNMFile[i]))
   
-  # Need to sort bam files by coord again to mark duplicates?
+  # Need to sort spret bam files by co-ordinates again to mark duplicates
+  files$lapelsAlignedCoordSortedBam[i] = gsub(".lapels.sortedByName.bam",".lapels.sortedByCoord.bam",files$lapelsAlignedBam[i])
+  sortCmd = paste("samtools sort", files$lapelsAlignedBam[i], "-o", files$lapelsAlignedCoordSortedBam[i])
+  system(sortCmd)
   
   print("Mark duplicates")
-  files$markDupsBam[i] = markDups(paste0(files$dir[i], bamSortFile), picardCmd, delBam = T)
-  bamFile = paste0(files$dir[i], files$bamFile[i])
+  
+  #### For B6 ####
+  files$markDupsB6Bam[i] = markDups(paste0(files$dir[i], files$bamB6NMFile[i]), picardCmd, delBam = T)
+  bamFile = paste0(files$dir[i], files$markDupsB6Bam[i])
   
   print("Get mapping stats")
   cts = getBamCts(bamFile)
   
-  files$unmapped.reads[i] = cts[1]
-  files$mapped.reads[i] = cts[2]
-  files$unique.reads[i] = cts[3]
-  files$paired.reads[i] = cts[4]
+  files$B6.unmapped.reads[i] = cts[1]
+  files$B6.mapped.reads[i] = cts[2]
+  files$B6.unique.reads[i] = cts[3]
+  files$B6.paired.reads[i] = cts[4]
+  
+  #### For Spret ####
+  files$markDupsSpretBam[i] = markDups(paste0(files$dir[i], files$lapelsAlignedCoordSortedBam[i]), picardCmd, delBam = T)
+  bamFile = paste0(files$dir[i], files$markDupsSpretBam[i])
+  
+  print("Get mapping stats")
+  cts = getBamCts(bamFile)
+  
+  files$Spret.unmapped.reads[i] = cts[1]
+  files$Spret.mapped.reads[i] = cts[2]
+  files$Spret.unique.reads[i] = cts[3]
+  files$Spret.paired.reads[i] = cts[4]
   
   # print("Sort bam")
   # bamSortFile = sortBam(bamFile,
