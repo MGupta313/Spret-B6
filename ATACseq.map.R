@@ -1,9 +1,9 @@
 # ATAC-seq QC/Mapping/post-processing script; First script in the bulk ATACseq pipeline.
 
 # Read in bistools; sources many functions important for this script
-source("/home/boss_lab/Apps/bitbucket/bistools/ESB_bisTools.R") # Magic
-#source("/home/boss_lab/Apps/bitbucket/ATACseq/ATACseq.calc.TSSenrichment.R") # Magic, calcTSSe()
-source("/home/boss_lab/Apps/bitbucket/sequencing-sample-qc/mapping_barplot.R") # Magic, plotting scripts
+source("/bistools/ESB_bisTools.R") # Magic
+#source("/ATACseq/ATACseq.calc.TSSenrichment.R") # Magic, calcTSSe()
+source("/sequencing-sample-qc/mapping_barplot.R") # Magic, plotting scripts
 library("stringr") # str_split_1()
 
 projectDir = "/home/boss_lab/Projects/Scharer_Projects/F1_hybrid_SpretB6/MZB_FoB_2023.11/ATAC/" # Replace, must have a '/' at the end

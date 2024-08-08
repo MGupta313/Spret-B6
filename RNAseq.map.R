@@ -1,8 +1,8 @@
 # RNA-seq data QC/Mapping/post-processing pipeline. First script in the bulk RNAseq pipeline.
 
 # Read in bistools; sources many important functions for this script
-source("/home/boss_lab/Apps/bitbucket/bistools/ESB_bisTools.R") # Magic
-source("/home/boss_lab/Apps/bitbucket/sequencing-sample-qc/mapping_barplot.R") # Magic, plotting scripts
+source("/bistools/ESB_bisTools.R") # Magic
+source("/sequencing-sample-qc/mapping_barplot.R") # Magic, plotting scripts
 library("stringr") # str_split_1()
 
 projectDir = "/home/boss_lab/Projects/Scharer_Projects/F1_hybrid_SpretB6/MZB_FoB_2023.11/RNA/" # Replace, must have '/' at the end
